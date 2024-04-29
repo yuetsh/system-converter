@@ -2,12 +2,13 @@
   <div class="container vertical-center">
     <div class="block mb-6">
       <div class="title is-size-1">
-        <span class="pr-4">{{ systemLabel }}是</span>
+        <span class="pr-4">转换成{{ systemLabel }}是</span>
         <span class="has-text-danger">{{ result }}</span>
       </div>
       <div class="title is-size-2">
-        <span class="pr-4">当前十进制是</span>
+        <span class="pr-4">（当前的十进制是</span>
         <span class="has-text-warning">{{ current }}</span>
+        <span>）</span>
       </div>
     </div>
     <div class="columns mb-6">
