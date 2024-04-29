@@ -1,8 +1,14 @@
 <template>
   <div class="container vertical-center">
     <div class="block mb-6">
-      <div class="title is-size-1">{{ label }}是 {{ result }}</div>
-      <div class="title is-size-2">当前十进制是 {{ current }}</div>
+      <div class="title is-size-1">
+        <span class="pr-4">{{ systemLabel }}是</span>
+        <span class="has-text-danger">{{ result }}</span>
+      </div>
+      <div class="title is-size-2">
+        <span class="pr-4">当前十进制是</span>
+        <span class="has-text-warning">{{ current }}</span>
+      </div>
     </div>
     <div class="columns mb-6">
       <div class="column">
@@ -24,52 +30,81 @@
         </div>
       </div>
     </div>
-    <div class="buttons">
-      <button class="button is-primary is-large" @click="start">转换</button>
-      <button class="button is-large" @click="clear">清空</button>
+    <div class="buttons are-large">
+      <button class="button is-primary" @click="start">
+        {{ buttonLabel }}
+      </button>
+      <button class="button" @click="clear">清空</button>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
 
+enum State {
+  PREPARE,
+  UNDERDOING,
+  PENDING,
+  DONE,
+}
+
 const num = ref(0)
 const result = ref("0")
 const current = ref(0)
-const timer = ref(0)
 const system = ref("2")
+const state = ref(State.PREPARE)
+
+let timer = 0
+
+function convert() {
+  result.value = Number(current.value)
+    .toString(parseInt(system.value))
+    .toUpperCase()
+}
 
 watch(system, () => {
-  if (timer.value) clearInterval(timer.value)
-  current.value = 0
-  result.value = "0"
+  state.value = State.PREPARE
+  if (timer) clearInterval(timer)
+  convert()
 })
 
-const label = computed(() => {
+const buttonLabel = computed(() => {
+  if (state.value === State.DONE) return "转换"
+  if (state.value === State.PENDING) return "继续"
+  if (state.value === State.PREPARE) return "转换"
+  if (state.value === State.UNDERDOING) return "暂停"
+})
+
+const systemLabel = computed(() => {
   if (system.value === "2") return "二进制"
   else if (system.value === "8") return "八进制"
   else return "十六进制"
 })
 
 function start() {
-  if (timer.value) clearInterval(timer.value)
-  timer.value = setInterval(() => {
+  if (state.value === State.UNDERDOING) {
+    clearInterval(timer)
+    state.value = State.PENDING
+    return
+  }
+  state.value = State.UNDERDOING
+  timer = setInterval(() => {
     if (current.value >= num.value) {
-      clearInterval(timer.value)
+      clearInterval(timer)
+      state.value = State.DONE
       return
     }
     current.value += 1
-    result.value = Number(current.value)
-      .toString(parseInt(system.value))
-      .toUpperCase()
+    convert()
   }, 1000)
 }
 
 function clear() {
-  if (timer.value) clearInterval(timer.value)
+  if (timer) clearInterval(timer)
   num.value = 0
   current.value = 0
   result.value = "0"
+  state.value = State.PREPARE
 }
 
 function add() {
@@ -90,7 +125,6 @@ function minus() {
 
 * {
   font-family: "MyFont";
-  box-sizing: border-box;
 }
 
 .container {
