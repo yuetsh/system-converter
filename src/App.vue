@@ -18,6 +18,7 @@
           <input class="input is-large" type="number" min="0" v-model="num" />
           <button class="button is-large" @click="add">+</button>
           <button class="button is-large" @click="minus">-</button>
+          <div class="title is-size-3">当前状态：{{ stateLabel }}</div>
         </div>
       </div>
       <div class="column">
@@ -74,6 +75,15 @@ const buttonLabel = computed(() => {
   if (state.value === State.PENDING) return "继续"
   if (state.value === State.PREPARE) return "转换"
   if (state.value === State.UNDERDOING) return "暂停"
+})
+
+const stateLabel = computed(() => {
+  if (state.value === State.DONE) return "已完成"
+  if (state.value === State.PENDING) return "暂停中"
+  if (state.value === State.PREPARE) return "准备开始"
+  if (state.value === State.UNDERDOING) {
+    return "正在转换中" + ".".repeat((current.value % 3) + 1)
+  }
 })
 
 const systemLabel = computed(() => {
