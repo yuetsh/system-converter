@@ -11,15 +11,10 @@
         <span>）</span>
       </div>
     </div>
-    <div class="columns mb-6">
+    <div class="columns">
       <div class="column">
         <label class="label is-large">十进制数字</label>
-        <div class="buttons">
-          <input class="input is-large" type="number" min="0" v-model="num" />
-          <button class="button is-large" @click="add">+</button>
-          <button class="button is-large" @click="minus">-</button>
-          <div class="title is-size-3">当前状态：{{ stateLabel }}</div>
-        </div>
+        <input class="input is-large" type="number" min="0" v-model="num" />
       </div>
       <div class="column">
         <label class="label is-large">选择进制</label>
@@ -32,6 +27,12 @@
         </div>
       </div>
     </div>
+    <div class="buttons mb-6">
+      <button class="button is-large" @click="add">+</button>
+      <button class="button is-large" @click="minus">-</button>
+      <div class="title is-size-3">当前状态：{{ stateLabel }}</div>
+    </div>
+
     <div class="buttons are-large">
       <button class="button is-primary" @click="start">
         {{ buttonLabel }}
